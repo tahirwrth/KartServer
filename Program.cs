@@ -8,17 +8,21 @@ class Program{
         Console.WriteLine("server started");
         try
         {
-        while (true)
-        {
-            IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
-            byte[] receivedData = udpListener.Receive(ref clientEndPoint);
-            if (receivedData != null)
+            while (true)
             {
-                string receivedMessage = System.Text.Encoding.UTF8.GetString(receivedData);
-                Console.WriteLine($"Received {receivedMessage}");
-                return;
+                IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                byte[] receivedData = udpListener.Receive(ref clientEndPoint);
+                if (receivedData != null)
+                {
+                    string receivedMessage = System.Text.Encoding.UTF8.GetString(receivedData);
+                    Console.WriteLine($"Received {receivedMessage}");
+                    
+                }
             }
+        } 
+        catch 
+        { 
+            Console.WriteLine("Exception"); 
         }
-        } catch { Console.WriteLine("Exception"); }
     }
 }
