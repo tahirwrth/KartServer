@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Quic;
 class Program{
     static void Main(string[] args)
     {
@@ -14,6 +15,14 @@ class Program{
             stopwatch.Start();
             while (true)
             {
+                if (Console.KeyAvailable)
+                {  
+                    ConsoleKeyInfo key = System.Console.ReadKey(true);//true don't print char on console
+                    if (key.Key == ConsoleKey.Q)
+                    {
+                        return;
+                    }
+                }
                 if (stopwatch.Elapsed.TotalSeconds > 1)
                 {
                     IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
@@ -23,7 +32,8 @@ class Program{
                         string receivedMessage = System.Text.Encoding.UTF8.GetString(receivedData);
                         Console.WriteLine($"Received {receivedMessage}");
                     }
-                    stopwatch.Reset();
+                    stopwatch.Stop();
+                    stopwatch.Restart();
                 }
                 
             }
