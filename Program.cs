@@ -4,11 +4,42 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Quic;
+using System.Text;
+using System.Net.Mail;
 class Program{
     static void Main(string[] args)
     {
-        UdpClient udpListener = new UdpClient(8888);
-        Console.WriteLine("server started");
+        const string serverIPAddress = "18.133.122.82"; // AWS 'Kart Server' Public IPv4
+        const string serverPort = "8888";
+        List<IPEndPoint> clients = new List<IPEndPoint>();
+
+        UdpClient udpListener = new UdpClient(int.Parse(serverPort));
+        Console.WriteLine($"Server started at {serverIPAddress}:{serverPort}");
+        //PositionsTest(udpListener);
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while (true)
+        {
+            if (stopwatch.Elapsed.TotalSeconds > 1)
+            {
+                clients = Handshake(clients);
+                stopwatch.Stop();
+                stopwatch.Restart();
+            }
+            
+            if (Console.KeyAvailable)
+            {  
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Q)
+                {
+                    return;
+                }
+            }
+        }
+    }
+
+    private static void PositionsTest(UdpClient udpListener)
+    {
         try
         {
             Stopwatch stopwatch = new Stopwatch();
@@ -17,7 +48,7 @@ class Program{
             {
                 if (Console.KeyAvailable)
                 {  
-                    ConsoleKeyInfo key = System.Console.ReadKey(true);//true don't print char on console
+                    ConsoleKeyInfo key = Console.ReadKey(true);
                     if (key.Key == ConsoleKey.Q)
                     {
                         return;
@@ -26,6 +57,7 @@ class Program{
                 if (stopwatch.Elapsed.TotalSeconds > 1)
                 {
                     IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    
                     byte[] receivedData = udpListener.Receive(ref clientEndPoint);
                     if (receivedData != null)
                     {
@@ -35,7 +67,6 @@ class Program{
                     stopwatch.Stop();
                     stopwatch.Restart();
                 }
-                
             }
         } 
         catch 
@@ -43,4 +74,25 @@ class Program{
             Console.WriteLine("Exception"); 
         }
     }
+
+    private static List<IPEndPoint> Handshake(List<IPEndPoint> clients)
+    {
+        IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+        UdpClient udpClient = new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port);
+        byte[] receivedData = udpClient.Receive(ref clientEndPoint);
+        if (receivedData != null)
+        {
+            string receivedMessage = Encoding.UTF8.GetString(receivedData);
+            if (receivedMessage == "newPlayer" && clients.Contains(clientEndPoint) == false)
+            {
+                string sendMessage = clients.Count.ToString();
+                byte[] sendEncoded = Encoding.UTF8.GetBytes(sendMessage);
+                udpClient.Send(sendEncoded, sendEncoded.Length);
+                clients.Add(clientEndPoint);
+            }
+        }
+        return clients;
+    }
+
+    
 }
