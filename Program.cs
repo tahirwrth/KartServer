@@ -77,22 +77,35 @@ class Program{
 
     private static List<IPEndPoint> Handshake(List<IPEndPoint> clients)
     {
-        IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
-        UdpClient udpClient = new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port);
-        byte[] receivedData = udpClient.Receive(ref clientEndPoint);
-        if (receivedData != null)
+        try
         {
-            string receivedMessage = Encoding.UTF8.GetString(receivedData);
-            if (receivedMessage == "newPlayer" && clients.Contains(clientEndPoint) == false)
+            while (true)
             {
-                string sendMessage = clients.Count.ToString();
-                byte[] sendEncoded = Encoding.UTF8.GetBytes(sendMessage);
-                udpClient.Send(sendEncoded, sendEncoded.Length);
-                clients.Add(clientEndPoint);
+                IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                UdpClient udpClient = new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port);
+                byte[] receivedData = udpClient.Receive(ref clientEndPoint);
+                if (receivedData != null)
+                {
+                    string receivedMessage = Encoding.UTF8.GetString(receivedData);
+                    if (receivedMessage == "newPlayer" && clients.Contains(clientEndPoint) == false)
+                    {
+                        string sendMessage = clients.Count.ToString();
+                        byte[] sendEncoded = Encoding.UTF8.GetBytes(sendMessage);
+                        udpClient.Send(sendEncoded, sendEncoded.Length);
+                        clients.Add(clientEndPoint);
+                        break;
+                    }
+                }
             }
+            return clients;
+        } 
+        catch 
+        { 
+            Console.WriteLine("Exception"); 
+            return clients;
         }
-        return clients;
     }
 
+    
     
 }
