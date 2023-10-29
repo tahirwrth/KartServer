@@ -11,11 +11,11 @@ class Program
     static void Main(string[] args)
     {
         const string serverIPAddress = "18.133.122.82"; // AWS 'Kart Server' Public IPv4
-        const string serverPort = "8888";
+        const int serverPort = 8888;
         List<IPEndPoint> clients = new List<IPEndPoint>();
         Dictionary<IPEndPoint, List<string>> clientData = new Dictionary<IPEndPoint, List<string>>();
 
-        UdpClient udpListener = new UdpClient(int.Parse(serverPort));
+        UdpClient udpListener = new UdpClient(serverPort);
         Console.WriteLine($"Server started at {serverIPAddress}:{serverPort}");
         //PositionsTest(udpListener);
 
@@ -41,14 +41,15 @@ class Program
                     if (receivedData != null)
                     {
                         string receivedMessage = Encoding.UTF8.GetString(receivedData);
-                        if (receivedMessage == "newPlayer" && clients.Contains(clientEndPoint) == false)
+                        
+                        if (receivedMessage == "newPlayer") // && clients.Contains(clientEndPoint) == false
                         {
                             Console.WriteLine($"New Player at {clientEndPoint.Address} assigned to {clients.Count}");
-                            UdpClient udpToClient = new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port);
+                            /*UdpClient udpToClient = new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port);
                             string message = clients.Count.ToString();
                             byte[] encoded = Encoding.UTF8.GetBytes(message);
                             udpToClient.Send(encoded, encoded.Length);
-                            clients.Add(clientEndPoint);
+                            clients.Add(clientEndPoint);*/
                         }
                         
                     }
