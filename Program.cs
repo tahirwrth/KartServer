@@ -18,9 +18,50 @@ class Program
         UdpClient udpListener = new UdpClient(int.Parse(serverPort));
         Console.WriteLine($"Server started at {serverIPAddress}:{serverPort}");
         //PositionsTest(udpListener);
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start();
-        clients = Handshake(udpListener, clients);
+
+        try
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (true)
+            {
+                if (Console.KeyAvailable)
+                {  
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    if (key.Key == ConsoleKey.Q)
+                    {
+                        return;
+                    }
+                }
+                if (stopwatch.Elapsed.TotalSeconds > 1)
+                {
+                    IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    
+                    byte[] receivedData = udpListener.Receive(ref clientEndPoint);
+                    if (receivedData != null)
+                    {
+                        string receivedMessage = Encoding.UTF8.GetString(receivedData);
+                        if (receivedMessage == "newPlayer" && clients.Contains(clientEndPoint) == false)
+                        {
+                            Console.WriteLine($"New Player at {clientEndPoint.Address} assigned to {clients.Count}");
+                            UdpClient udpToClient = new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port);
+                            string message = clients.Count.ToString();
+                            byte[] encoded = Encoding.UTF8.GetBytes(message);
+                            udpToClient.Send(encoded, encoded.Length);
+                            clients.Add(clientEndPoint);
+                        }
+                        
+                    }
+                    stopwatch.Stop();
+                    stopwatch.Restart();
+                }
+            }
+        } 
+        catch 
+        { 
+            Console.WriteLine("Exception"); 
+            return;
+        }
     }
 
     private static void PositionsTest(UdpClient udpListener)
