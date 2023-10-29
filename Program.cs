@@ -13,30 +13,14 @@ class Program
         const string serverIPAddress = "18.133.122.82"; // AWS 'Kart Server' Public IPv4
         const string serverPort = "8888";
         List<IPEndPoint> clients = new List<IPEndPoint>();
+        Dictionary<IPEndPoint, List<string>> clientData = new Dictionary<IPEndPoint, List<string>>();
 
         UdpClient udpListener = new UdpClient(int.Parse(serverPort));
         Console.WriteLine($"Server started at {serverIPAddress}:{serverPort}");
         //PositionsTest(udpListener);
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
-        while (true)
-        {
-            if (stopwatch.Elapsed.TotalSeconds > 1)
-            {
-                clients = Handshake(udpListener, clients);
-                stopwatch.Stop();
-                stopwatch.Restart();
-            }
-            
-            if (Console.KeyAvailable)
-            {  
-                ConsoleKeyInfo key = Console.ReadKey(true);
-                if (key.Key == ConsoleKey.Q)
-                {
-                    return;
-                }
-            }
-        }
+        clients = Handshake(udpListener, clients);
     }
 
     private static void PositionsTest(UdpClient udpListener)
@@ -130,7 +114,7 @@ class Program
                     byte[] receivedData = udpListener.Receive(ref clientEndPoint);
                     if (receivedData != null)
                     {
-                        string receivedMessage = System.Text.Encoding.UTF8.GetString(receivedData);
+                        string receivedMessage = Encoding.UTF8.GetString(receivedData);
                         if (receivedMessage == "newPlayer" && clients.Contains(clientEndPoint) == false)
                         {
                             Console.WriteLine($"New Player at {clientEndPoint.Address} assigned to {clients.Count}");
