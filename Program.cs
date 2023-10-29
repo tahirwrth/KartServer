@@ -43,14 +43,14 @@ class Program
                     {
                         string receivedMessage = Encoding.UTF8.GetString(receivedData);
                         
-                        if (receivedMessage == "newPlayer") // && clients.Contains(clientEndPoint) == false
+                        if (receivedMessage == "newPlayer" && clients.Contains(clientEndPoint) == false)
                         {
                             Console.WriteLine($"New Player at {clientEndPoint.Address} assigned to {clients.Count}");
-                            /*UdpClient udpToClient = new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port);
+                            UdpClient udpToClient = new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port);
                             string message = clients.Count.ToString();
                             byte[] encoded = Encoding.UTF8.GetBytes(message);
                             udpToClient.Send(encoded, encoded.Length);
-                            clients.Add(clientEndPoint);*/
+                            clients.Add(clientEndPoint);
                         }
                         
                     }
