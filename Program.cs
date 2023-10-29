@@ -35,6 +35,7 @@ class Program
                 }
                 if (stopwatch.Elapsed.TotalSeconds > 2)
                 {
+                    Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
                     IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
                     
                     byte[] receivedData = udpListener.Receive(ref clientEndPoint);
