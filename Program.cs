@@ -33,7 +33,7 @@ class Program
                         return;
                     }
                 }
-                if (stopwatch.Elapsed.TotalSeconds > 1)
+                if (stopwatch.Elapsed.TotalSeconds > 2)
                 {
                     IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
                     
