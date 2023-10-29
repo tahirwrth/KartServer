@@ -10,7 +10,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        const string serverIPAddress = "18.133.122.82"; // AWS 'Kart Server' Public IPv4
+        const string serverIPAddress = "18.132.209.245"; // AWS 'Kart Server' Public IPv4
         const int serverPort = 8888;
         List<IPEndPoint> clients = new List<IPEndPoint>();
         Dictionary<IPEndPoint, List<string>> clientData = new Dictionary<IPEndPoint, List<string>>();
