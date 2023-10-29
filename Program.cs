@@ -6,7 +6,8 @@ using System.Diagnostics;
 using System.Net.Quic;
 using System.Text;
 using System.Net.Mail;
-class Program{
+class Program
+{
     static void Main(string[] args)
     {
         const string serverIPAddress = "18.133.122.82"; // AWS 'Kart Server' Public IPv4
@@ -22,7 +23,7 @@ class Program{
         {
             if (stopwatch.Elapsed.TotalSeconds > 1)
             {
-                clients = Handshake(clients);
+                clients = Handshake(udpListener, clients);
                 stopwatch.Stop();
                 stopwatch.Restart();
             }
@@ -75,7 +76,7 @@ class Program{
         }
     }
 
-    private static List<IPEndPoint> Handshake(List<IPEndPoint> clients)
+    private static List<IPEndPoint> HandshakeL(List<IPEndPoint> clients)
     {
         try
         {
@@ -106,6 +107,50 @@ class Program{
         }
     }
 
-    
-    
+    private static List<IPEndPoint> Handshake(UdpClient udpListener, List<IPEndPoint> clients)
+    {
+        try
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (true)
+            {
+                if (Console.KeyAvailable)
+                {  
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    if (key.Key == ConsoleKey.Q)
+                    {
+                        return clients;
+                    }
+                }
+                if (stopwatch.Elapsed.TotalSeconds > 1)
+                {
+                    IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    
+                    byte[] receivedData = udpListener.Receive(ref clientEndPoint);
+                    if (receivedData != null)
+                    {
+                        string receivedMessage = System.Text.Encoding.UTF8.GetString(receivedData);
+                        if (receivedMessage == "newPlayer" && clients.Contains(clientEndPoint) == false)
+                        {
+                            Console.WriteLine($"New Player at {clientEndPoint.Address} assigned to {clients.Count}");
+                            UdpClient udpToClient = new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port);
+                            string message = clients.Count.ToString();
+                            byte[] encoded = Encoding.UTF8.GetBytes(message);
+                            udpToClient.Send(encoded, encoded.Length);
+                            clients.Add(clientEndPoint);
+                        }
+                        
+                    }
+                    stopwatch.Stop();
+                    stopwatch.Restart();
+                }
+            }
+        } 
+        catch 
+        { 
+            Console.WriteLine("Exception"); 
+            return clients;
+        }
+    }
 }
