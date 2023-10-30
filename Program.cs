@@ -51,9 +51,9 @@ class Program
                 Broadcast(udpListener, clientData);
             }
         } 
-        catch 
+        catch (Exception e)
         { 
-            Console.WriteLine("Exception"); 
+            Console.WriteLine(e.ToString()); 
             return;
         }
     }
