@@ -48,7 +48,7 @@ class Program
                     //string[] posRot = Encoding.UTF8.GetString(receivedData).Split(':');
                     clientData[clients.IndexOf(clientEndPoint)] = Encoding.UTF8.GetString(receivedData);
                 }
-                Broadcast(udpListener, clientData);
+                Broadcast(new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port), clientData);
             }
         } 
         catch (Exception e)
