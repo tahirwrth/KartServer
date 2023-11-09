@@ -17,8 +17,18 @@ class Program
 
         UdpClient udpListener = new UdpClient(serverPort);
         Console.WriteLine($"Server started at {serverIPAddress}:{serverPort}");
+        
+        while (true){
+            if (Console.KeyAvailable){
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.O){
+                    return;
+                }
+            }
+            PrintReceived(udpListener);
+        }
 
-        try
+        /*try
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -55,10 +65,10 @@ class Program
         { 
             Console.WriteLine(e.ToString()); 
             return;
-        }
+        }*/
     }
 
-    private static void PositionsTest(UdpClient udpListener)
+    private static void PrintReceived(UdpClient udpListener)
     {
         try
         {
@@ -81,7 +91,7 @@ class Program
                     byte[] receivedData = udpListener.Receive(ref clientEndPoint);
                     if (receivedData != null)
                     {
-                        string receivedMessage = System.Text.Encoding.UTF8.GetString(receivedData);
+                        string receivedMessage = Encoding.UTF8.GetString(receivedData);
                         Console.WriteLine($"Received {receivedMessage}");
                     }
                     stopwatch.Stop();
@@ -112,9 +122,7 @@ class Program
                 byte[] encoded = Encoding.UTF8.GetBytes(message);
                 udpToClient.Send(encoded, encoded.Length);
                 clients.Add(clientEndPoint);
-                return clients;
             }
-        
         }
         return clients;
     }
