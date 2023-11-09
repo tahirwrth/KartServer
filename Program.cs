@@ -78,14 +78,9 @@ class Program
                 }
                 if (stopwatch.Elapsed.TotalSeconds > 1)
                 {
-                    IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                    
-                    byte[] receivedData = udpListener.Receive(ref clientEndPoint);
-                    if (receivedData != null)
-                    {
-                        string receivedMessage = Encoding.UTF8.GetString(receivedData);
-                        Console.WriteLine($"Received {receivedMessage}");
-                    }
+                    string message = ReceiveString(udpListener);
+                    Console.WriteLine(message);
+                    BroadcastString(udpListener, message);
                     stopwatch.Stop();
                     stopwatch.Restart();
                 }
@@ -97,6 +92,21 @@ class Program
         }
     }
 
+
+    private static string ReceiveString(UdpClient udpListener)
+    {
+        string message = String.Empty;
+
+        IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    
+        byte[] receivedData = udpListener.Receive(ref clientEndPoint);
+        if (receivedData != null)
+        {
+            message = Encoding.UTF8.GetString(receivedData);
+        }
+
+        return message;
+    }
     private static List<IPEndPoint> Handshake(UdpClient udpListener, List<IPEndPoint> clients)
     {
         IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
@@ -118,7 +128,7 @@ class Program
         }
         return clients;
     }
-    private static void Broadcast(UdpClient udpListener, Dictionary<int, string> data)
+    private static void BroadcastAll(UdpClient udpListener, Dictionary<int, string> data)
     {
         string message;
         byte[] encoded;
@@ -129,5 +139,11 @@ class Program
             encoded = Encoding.UTF8.GetBytes(message);
             udpListener.Send(encoded, encoded.Length);
         }
+    }
+    private static void BroadcastString(UdpClient udpListener, string message)
+    {
+        byte[] encoded;
+        encoded = Encoding.UTF8.GetBytes(message);
+        udpListener.Send(encoded, encoded.Length);
     }
 }
