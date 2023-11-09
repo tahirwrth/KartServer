@@ -12,13 +12,17 @@ class Program
     {
         const string serverIPAddress = "18.132.209.245"; // AWS 'Kart Server' Public IPv4
         const int serverPort = 8888;
+
+        Console.WriteLine("input client IP");
+        string clientIp = Console.ReadLine();
+
         List<IPEndPoint> clients = new List<IPEndPoint>();
         Dictionary<int, string> clientData = new Dictionary<int, string>(); // int playerNumber, string position:rotation
 
         UdpClient udpListener = new UdpClient(serverPort);
         Console.WriteLine($"Server started at {serverIPAddress}:{serverPort}");
         
-        PrintReceived(udpListener);
+        PrintReceived(udpListener, clientIp);
 
         /*try
         {
@@ -60,7 +64,7 @@ class Program
         }*/
     }
 
-    private static void PrintReceived(UdpClient udpListener)
+    private static void PrintReceived(UdpClient udpListener, string clientIp)
     {
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -79,7 +83,7 @@ class Program
                 string message = ReceiveString(udpListener);
                 Console.WriteLine(message);
 
-                BroadcastString(new UdpClient("194.81.3.100", 8888), message);
+                BroadcastString(new UdpClient(clientIp, 8888), message);
                 stopwatch.Stop();
                 stopwatch.Restart();
             }
