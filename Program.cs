@@ -14,7 +14,6 @@ class Program
         const int serverPort = 8888;
 
         Console.WriteLine("input client IP");
-        string clientIp = Console.ReadLine();
 
         List<IPEndPoint> clients = new List<IPEndPoint>();
         Dictionary<int, string> clientData = new Dictionary<int, string>(); // int playerNumber, string position:rotation
@@ -22,7 +21,7 @@ class Program
         UdpClient udpListener = new UdpClient(serverPort);
         Console.WriteLine($"Server started at {serverIPAddress}:{serverPort}");
         
-        PrintReceived(udpListener, clientIp);
+        PrintReceived(udpListener);
 
         /*try
         {
@@ -64,7 +63,7 @@ class Program
         }*/
     }
 
-    private static void PrintReceived(UdpClient udpListener, string clientIp)
+    private static void PrintReceived(UdpClient udpListener)
     {
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -79,11 +78,20 @@ class Program
                 }
             }
             if (stopwatch.Elapsed.TotalSeconds > 1)
-            {
-                string message = ReceiveString(udpListener);
+            {   
+                string message = String.Empty;
+
+                IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    
+                byte[] receivedData = udpListener.Receive(ref clientEndPoint);
+                if (receivedData != null)
+                {
+                    message = Encoding.UTF8.GetString(receivedData);
+                }
+
                 Console.WriteLine(message);
 
-                BroadcastString(new UdpClient(clientIp, 8888), message);
+                BroadcastString(new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port), message);
                 stopwatch.Stop();
                 stopwatch.Restart();
             }
