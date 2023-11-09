@@ -62,35 +62,30 @@ class Program
 
     private static void PrintReceived(UdpClient udpListener)
     {
-        try
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while (true)
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            while (true)
-            {
-                if (Console.KeyAvailable)
-                {  
-                    ConsoleKeyInfo key = Console.ReadKey(true);
-                    if (key.Key == ConsoleKey.Q)
-                    {
-                        return;
-                    }
-                }
-                if (stopwatch.Elapsed.TotalSeconds > 1)
+            if (Console.KeyAvailable)
+            {  
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Q)
                 {
-                    string message = ReceiveString(udpListener);
-                    Console.WriteLine(message);
-                    BroadcastString(udpListener, message);
-                    stopwatch.Stop();
-                    stopwatch.Restart();
+                    return;
                 }
             }
-        } 
-        catch 
-        { 
-            Console.WriteLine("Exception"); 
+            if (stopwatch.Elapsed.TotalSeconds > 1)
+            {
+                string message = ReceiveString(udpListener);
+                Console.WriteLine(message);
+
+                BroadcastString(udpListener, message);
+                stopwatch.Stop();
+                stopwatch.Restart();
+            }
         }
     }
+    
 
 
     private static string ReceiveString(UdpClient udpListener)
@@ -144,6 +139,13 @@ class Program
     {
         byte[] encoded;
         encoded = Encoding.UTF8.GetBytes(message);
-        udpListener.Send(encoded, encoded.Length);
+        try
+        {
+            udpListener.Send(encoded, encoded.Length);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 }
