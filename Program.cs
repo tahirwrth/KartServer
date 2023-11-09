@@ -18,15 +18,7 @@ class Program
         UdpClient udpListener = new UdpClient(serverPort);
         Console.WriteLine($"Server started at {serverIPAddress}:{serverPort}");
         
-        while (true){
-            if (Console.KeyAvailable){
-                ConsoleKeyInfo key = Console.ReadKey(true);
-                if (key.Key == ConsoleKey.O){
-                    return;
-                }
-            }
-            PrintReceived(udpListener);
-        }
+        PrintReceived(udpListener);
 
         /*try
         {
