@@ -79,7 +79,7 @@ class Program
                 string message = ReceiveString(udpListener);
                 Console.WriteLine(message);
 
-                BroadcastString(udpListener, message);
+                BroadcastString(new UdpClient("194.81.3.100", 8888), message);
                 stopwatch.Stop();
                 stopwatch.Restart();
             }
