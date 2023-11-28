@@ -84,15 +84,15 @@ class Program
         string message = String.Empty;
 
         IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                    
+        
         byte[] receivedData = udpListener.Receive(ref clientEndPoint);
         if (receivedData != null)
         {
             message = Encoding.UTF8.GetString(receivedData);
         }
-
-        Console.WriteLine(message);
-        return clientEndPoint;
+        string[] ipMess = message.Split("+");
+        Console.WriteLine(ipMess[1]);
+        return new IPEndPoint(IPAddress.Parse(ipMess[0]), 0);
     }
     
 
