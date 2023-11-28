@@ -52,7 +52,7 @@ class Program
                 player1IP = ipMess[0];
                 player1Data = message;
             }
-            else if (player2IP == null)
+            else if (player2IP == null && ipMess[0] != player1IP)
             {
                 player2IP = ipMess[0];
                 player2Data = message;
