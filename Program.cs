@@ -30,7 +30,7 @@ class Program
             IPEndPoint clientEndPoint = PrintReceived(udpListener);
             if (clientEndPoint != null)
             {
-                BroadcastString(new UdpClient(clientEndPoint.Address.ToString(), 8888), "hello");
+                BroadcastString(new UdpClient(clientEndPoint.Address.ToString(), 8080), "hello");
             }
         }
 
@@ -87,7 +87,7 @@ class Program
         }
         string[] ipMess = message.Split("+");
         Console.WriteLine(ipMess[1]);
-        return new IPEndPoint(IPAddress.Parse(ipMess[0]), 8888);
+        return new IPEndPoint(IPAddress.Parse(ipMess[0]), 8080);
     }
     
 
