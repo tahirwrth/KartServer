@@ -14,8 +14,25 @@ class Program
 
         UdpClient udpListener = new UdpClient(serverPort);
         Console.WriteLine($"Server started at {serverIPAddress}:{serverPort}");
-        
-        PrintReceived(udpListener);
+
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while (true)
+        {
+            if (Console.KeyAvailable)
+            {  
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Q)
+                {
+                    return;
+                }
+            }
+            if (stopwatch.Elapsed.TotalSeconds > 1)
+            {   
+                IPEndPoint clientEndPoint = PrintReceived(udpListener);
+                string message = "hello";
+                BroadcastString(new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port), message);}
+        }
 
         /*try
         {
@@ -57,39 +74,20 @@ class Program
         }*/
     }
 
-    private static void PrintReceived(UdpClient udpListener)
+    private static IPEndPoint PrintReceived(UdpClient udpListener)
     {
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start();
-        while (true)
-        {
-            if (Console.KeyAvailable)
-            {  
-                ConsoleKeyInfo key = Console.ReadKey(true);
-                if (key.Key == ConsoleKey.Q)
-                {
-                    return;
-                }
-            }
-            if (stopwatch.Elapsed.TotalSeconds > 1)
-            {   
-                string message = String.Empty;
+        string message = String.Empty;
 
-                IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+        IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
                     
-                byte[] receivedData = udpListener.Receive(ref clientEndPoint);
-                if (receivedData != null)
-                {
-                    message = Encoding.UTF8.GetString(receivedData);
-                }
-
-                Console.WriteLine(message);
-
-                BroadcastString(new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port), message);
-                stopwatch.Stop();
-                stopwatch.Restart();
-            }
+        byte[] receivedData = udpListener.Receive(ref clientEndPoint);
+        if (receivedData != null)
+        {
+            message = Encoding.UTF8.GetString(receivedData);
         }
+
+        Console.WriteLine(message);
+        return clientEndPoint;
     }
     
 
@@ -143,8 +141,7 @@ class Program
     }
     private static void BroadcastString(UdpClient udpListener, string message)
     {
-        byte[] encoded;
-        encoded = Encoding.UTF8.GetBytes(message);
+        byte[] encoded = Encoding.UTF8.GetBytes(message);
         try
         {
             udpListener.Send(encoded, encoded.Length);
@@ -158,9 +155,11 @@ class Program
     private static string GetServerIP()
     {
         string ipAddress = String.Empty;
+
+        // uses WebClient to get server's public IPv4 from https://api.ipify.org which contains the IP as text in a HTML document
         using (WebClient webClient = new WebClient())
         {
-            ipAddress = webClient.DownloadString("https://api.ipify.org");        
+            ipAddress = webClient.DownloadString("https://api.ipify.org");     
         }
         return ipAddress;
     }
