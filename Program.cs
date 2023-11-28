@@ -160,8 +160,7 @@ class Program
         string ipAddress = String.Empty;
         using (WebClient webClient = new WebClient())
         {
-            UTF8Encoding uTF8Encoding = new UTF8Encoding();
-            ipAddress = uTF8Encoding.GetString(webClient.DownloadData("https://whatismyip.com/automation/n09230945.asp"));            
+            ipAddress = webClient.DownloadString("https://api.ipify.org");        
         }
         return ipAddress;
     }
