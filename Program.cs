@@ -27,11 +27,16 @@ class Program
                     return;
                 }
             }
-            if (stopwatch.Elapsed.TotalSeconds > 1)
+            if (stopwatch.Elapsed.TotalSeconds > 0.5)
             {   
                 IPEndPoint clientEndPoint = PrintReceived(udpListener);
-                string message = "hello";
-                BroadcastString(new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port), message);}
+                if (clientEndPoint != null)
+                {
+                    BroadcastString(new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port), "hello");
+                    stopwatch.Restart();
+                }
+                
+            }
         }
 
         /*try
