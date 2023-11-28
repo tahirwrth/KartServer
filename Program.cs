@@ -7,7 +7,7 @@ class Program
     static void Main(string[] args)
     {
         string serverIPAddress = GetServerIP(); // AWS 'Kart Server' Public IPv4
-        const int serverPort = 8888;
+        const int serverPort = 8080;
 
         List<IPEndPoint> clients = new List<IPEndPoint>();
         Dictionary<int, string> clientData = new Dictionary<int, string>(); // int playerNumber, string position:rotation
