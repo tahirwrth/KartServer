@@ -1,19 +1,13 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net.Quic;
 using System.Text;
-using System.Net.Mail;
 class Program
 {
     static void Main(string[] args)
     {
-        const string serverIPAddress = "18.132.209.245"; // AWS 'Kart Server' Public IPv4
+        string serverIPAddress = GetServerIP(); // AWS 'Kart Server' Public IPv4
         const int serverPort = 8888;
-
-        Console.WriteLine("input client IP");
 
         List<IPEndPoint> clients = new List<IPEndPoint>();
         Dictionary<int, string> clientData = new Dictionary<int, string>(); // int playerNumber, string position:rotation
@@ -159,5 +153,16 @@ class Program
         {
             Console.WriteLine(e);
         }
+    }
+
+    private static string GetServerIP()
+    {
+        string ipAddress = String.Empty;
+        using (WebClient webClient = new WebClient())
+        {
+            UTF8Encoding uTF8Encoding = new UTF8Encoding();
+            ipAddress = uTF8Encoding.GetString(webClient.DownloadData("https://whatismyip.com/automation/n09230945.asp"));            
+        }
+        return ipAddress;
     }
 }
