@@ -15,9 +15,9 @@ class Program
         List<IPEndPoint> clients = new List<IPEndPoint>();
         Dictionary<string, string> clientData = new Dictionary<string, string>(); // string ip, string position:rotation
 
-        string player1IP = null;
+        string player1IP = String.Empty;
         string player1Data = String.Empty;
-        string player2IP = null;
+        string player2IP = String.Empty;
         string player2Data = String.Empty;
 
         UdpClient udpListener = new UdpClient(serverPort);
@@ -47,12 +47,12 @@ class Program
                 message = Encoding.UTF8.GetString(receivedData);
             }
             string[] ipMess = message.Split("+");
-            if (player1IP == null)
+            if (String.IsNullOrEmpty(player1IP))
             {
                 player1IP = ipMess[0];
                 player1Data = message;
             }
-            else if (player2IP == null && ipMess[0] != player1IP)
+            else if (String.IsNullOrEmpty(player2IP) && ipMess[0] != player1IP)
             {
                 player2IP = ipMess[0];
                 player2Data = message;
