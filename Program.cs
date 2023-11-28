@@ -32,7 +32,7 @@ class Program
                 IPEndPoint clientEndPoint = PrintReceived(udpListener);
                 if (clientEndPoint != null)
                 {
-                    BroadcastString(new UdpClient(clientEndPoint.Address.ToString(), clientEndPoint.Port), "hello");
+                    BroadcastString(new UdpClient(clientEndPoint.Address.ToString(), 8888), "hello");
                     stopwatch.Restart();
                 }
                 
