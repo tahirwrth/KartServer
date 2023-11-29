@@ -24,7 +24,6 @@ class Program
         Console.WriteLine($"Server started at {serverIPAddress}:{serverPort}");
 
         Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start();
         while (true)
         {
             if (Console.KeyAvailable)
@@ -42,43 +41,51 @@ class Program
             IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
             
             byte[] receivedData = udpListener.Receive(ref clientEndPoint);
-            if (receivedData != null && stopwatch.ElapsedMilliseconds < 200)
+            if (receivedData != null)
             {
                 message = Encoding.UTF8.GetString(receivedData);
                 if (string.IsNullOrEmpty(message) == false)
                 {
                     ipMess = message.Split("+"); // [ipaddress],[(position):(rotation)]
-                
-                    if (started == false && string.IsNullOrEmpty(player1IP) && ipMess[0] != player2IP)
+                    if (started == false)
                     {
-                        player1IP = ipMess[0];
-                        player1Data = message;
+                        if (string.IsNullOrEmpty(player1IP) && ipMess[0] != player2IP)
+                        {
+                            player1IP = ipMess[0];
+                            player1Data = message;
+                            Console.WriteLine(player1IP);
+                        }
+                        else if(string.IsNullOrEmpty(player2IP) && ipMess[0] != player1IP)
+                        {
+                            player2IP = ipMess[0];
+                            player2Data = message;
+                            started = true;
+                            Console.WriteLine(player2IP);
+                        }
                     }
-                    else if(started == false && string.IsNullOrEmpty(player2IP) && ipMess[0] != player1IP)
+                    else
                     {
-                        player2IP = ipMess[0];
-                        player2Data = message;
-                        started = true;
-                    }
+                         if (ipMess[0] == player1IP)
+                        {
+                            player1Data = ipMess[1];
+                            BroadcastString(udpListener, clientEndPoint, player2Data);
+                        }
+                        else if (ipMess[0] == player2IP)
+                        {
+                            player2Data = ipMess[1];
+                            BroadcastString(udpListener, clientEndPoint, player1Data);
+                        }
 
-                    else if (ipMess[0] == player1IP)
-                    {
-                        player1Data = ipMess[1];
-                        BroadcastString(udpListener, clientEndPoint, player2Data);
-                    }
-                    else if (ipMess[0] == player2IP)
-                    {
-                        player2Data = ipMess[1];
-                        BroadcastString(udpListener, clientEndPoint, player1Data);
-                    }
-
-                    if (!string.IsNullOrEmpty(player2IP))
-                    {
-                        Console.WriteLine(player2IP);
+                        /*if (!string.IsNullOrEmpty(player2IP))
+                        {
+                            Console.WriteLine(player2IP);
+                        }*/
+                    
                     }
                     
+
+                    
                 }
-                stopwatch.Restart();
                 
                 /*else if (ipMess[0] == player1IP)
                 {
