@@ -70,7 +70,7 @@ class Program
                 //send player 1 data to player 2 
             }*/
             BroadcastString(udpListener, clientEndPoint, "playerData");
-            Console.WriteLine(message);
+            Console.WriteLine($"{ipMess[0]} , {ipMess[1]}");
         }
 
         /*try
