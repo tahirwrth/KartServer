@@ -41,13 +41,13 @@ class Program
 
             IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
             
-            /*byte[] receivedData = udpListener.Receive(ref clientEndPoint);
+            byte[] receivedData = udpListener.Receive(ref clientEndPoint);
             if (receivedData != null)
             {
                 message = Encoding.UTF8.GetString(receivedData);
             }
             string[] ipMess = message.Split("+");
-            if (String.IsNullOrEmpty(player1IP))
+            /*if (String.IsNullOrEmpty(player1IP))
             {
                 player1IP = ipMess[0];
                 player1Data = message;
