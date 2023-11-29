@@ -60,7 +60,17 @@ class Program
                         player2Data = message;
                     }
 
-                    Console.WriteLine(player1Data + player2Data);
+                    else if (ipMess[0] == player1IP)
+                    {
+                        player1Data = ipMess[1];
+                        BroadcastString(udpListener, clientEndPoint, player2Data);
+                    }
+                    else if (ipMess[0] == player2IP)
+                    {
+                        player2Data = ipMess[1];
+                        BroadcastString(udpListener, clientEndPoint, player1Data);
+                    }
+                    Console.WriteLine(player2IP);
                 }
                 
                 /*else if (ipMess[0] == player1IP)
