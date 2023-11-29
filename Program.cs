@@ -38,39 +38,40 @@ class Program
 
 
             string message = String.Empty;
-
+            string[] ipMess;
             IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
             
             byte[] receivedData = udpListener.Receive(ref clientEndPoint);
             if (receivedData != null)
             {
                 message = Encoding.UTF8.GetString(receivedData);
+                if (String.IsNullOrEmpty(message) == false)
+                {
+                    ipMess = message.Split("+"); // [ipaddress],[(position):(rotation)]
+                
+                    if (String.IsNullOrEmpty(player1IP) && ipMess[0] != player2IP)
+                    {
+                        player1IP = ipMess[0];
+                        player1Data = message;
+                    }
+                    else if(String.IsNullOrEmpty(player2IP) && ipMess[0] != player1IP)
+                    {
+                        player2IP = ipMess[0];
+                        player2Data = message;
+                    }
+
+                    Console.WriteLine(player1Data + player2Data);
+                }
+                
+                /*else if (ipMess[0] == player1IP)
+                {
+                    BroadcastString(udpListener, clientEndPoint, player2Data);
+                }
+                else if (ipMess[0] == player2IP)
+                {
+                    BroadcastString(udpListener, clientEndPoint, player1Data);
+                }*/
             }
-            string[] ipMess = message.Split("+");
-            /*if (String.IsNullOrEmpty(player1IP))
-            {
-                player1IP = ipMess[0];
-                player1Data = message;
-            }
-            else if (String.IsNullOrEmpty(player2IP) && ipMess[0] != player1IP)
-            {
-                player2IP = ipMess[0];
-                player2Data = message;
-            }
-            if (ipMess[0] == player1IP)
-            {
-                player1Data = message;
-                BroadcastString(udpListener, clientEndPoint, player2Data);
-                //send player 2 data to player 1
-            }
-            if (ipMess[1] == player2IP)
-            {
-                player2Data = message;
-                BroadcastString(udpListener, clientEndPoint, player1Data);
-                //send player 1 data to player 2 
-            }*/
-            BroadcastString(udpListener, clientEndPoint, "playerData");
-            Console.WriteLine($"{ipMess[0]} , {ipMess[1]}");
         }
 
         /*try
