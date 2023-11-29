@@ -71,9 +71,9 @@ class Program
                         BroadcastString(udpListener, clientEndPoint, player1Data);
                     }
 
-                    if (!string.IsNullOrEmpty(player2IP))
+                    if (!string.IsNullOrEmpty(player1IP))
                     {
-                        Console.WriteLine(player2IP);
+                        Console.WriteLine(player1IP);
                     }
                     
                 }
