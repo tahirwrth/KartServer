@@ -45,16 +45,16 @@ class Program
             if (receivedData != null)
             {
                 message = Encoding.UTF8.GetString(receivedData);
-                if (String.IsNullOrEmpty(message) == false)
+                if (string.IsNullOrEmpty(message) == false)
                 {
                     ipMess = message.Split("+"); // [ipaddress],[(position):(rotation)]
                 
-                    if (String.IsNullOrEmpty(player1IP) && ipMess[0] != player2IP)
+                    if (string.IsNullOrEmpty(player1IP) && ipMess[0] != player2IP)
                     {
                         player1IP = ipMess[0];
                         player1Data = message;
                     }
-                    else if(String.IsNullOrEmpty(player2IP) && ipMess[0] != player1IP)
+                    else if(string.IsNullOrEmpty(player2IP) && ipMess[0] != player1IP)
                     {
                         player2IP = ipMess[0];
                         player2Data = message;
@@ -70,7 +70,12 @@ class Program
                         player2Data = ipMess[1];
                         BroadcastString(udpListener, clientEndPoint, player1Data);
                     }
-                    Console.WriteLine(player2IP);
+
+                    if (!string.IsNullOrEmpty(player2IP))
+                    {
+                        Console.WriteLine(player2IP);
+                    }
+                    
                 }
                 
                 /*else if (ipMess[0] == player1IP)
@@ -83,7 +88,6 @@ class Program
                 }*/
             }
         }
-
         /*try
         {
             Stopwatch stopwatch = new Stopwatch();
@@ -156,9 +160,6 @@ class Program
         Console.WriteLine(ipMess[1]);
         return clientEndPoint;
     }
-    
-
-
     private static string ReceiveString(UdpClient udpListener)
     {
         string message = String.Empty;
@@ -218,7 +219,6 @@ class Program
             Console.WriteLine(e);
         }
     }
-
     private static string GetServerIP()
     {
         string ipAddress = String.Empty;
