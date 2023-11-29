@@ -67,12 +67,12 @@ class Program
                     {
                          if (ipMess[0] == player1IP)
                         {
-                            player1Data = ipMess[1];
+                            player1Data = message;
                             BroadcastString(udpListener, clientEndPoint, player2Data);
                         }
                         else if (ipMess[0] == player2IP)
                         {
-                            player2Data = ipMess[1];
+                            player2Data = message;
                             BroadcastString(udpListener, clientEndPoint, player1Data);
                         }
 
