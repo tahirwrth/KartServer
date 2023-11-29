@@ -19,7 +19,7 @@ class Program
         string player1Data = String.Empty;
         string player2IP = String.Empty;
         string player2Data = String.Empty;
-
+        bool started = false;
         UdpClient udpListener = new UdpClient(serverPort);
         Console.WriteLine($"Server started at {serverIPAddress}:{serverPort}");
 
@@ -42,22 +42,23 @@ class Program
             IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
             
             byte[] receivedData = udpListener.Receive(ref clientEndPoint);
-            if (receivedData != null)
+            if (receivedData != null && stopwatch.ElapsedMilliseconds < 200)
             {
                 message = Encoding.UTF8.GetString(receivedData);
                 if (string.IsNullOrEmpty(message) == false)
                 {
                     ipMess = message.Split("+"); // [ipaddress],[(position):(rotation)]
                 
-                    if (string.IsNullOrEmpty(player1IP) && ipMess[0] != player2IP)
+                    if (started == false && string.IsNullOrEmpty(player1IP) && ipMess[0] != player2IP)
                     {
                         player1IP = ipMess[0];
                         player1Data = message;
                     }
-                    else if(string.IsNullOrEmpty(player2IP) && ipMess[0] != player1IP)
+                    else if(started == false && string.IsNullOrEmpty(player2IP) && ipMess[0] != player1IP)
                     {
                         player2IP = ipMess[0];
                         player2Data = message;
+                        started = true;
                     }
 
                     else if (ipMess[0] == player1IP)
@@ -71,12 +72,13 @@ class Program
                         BroadcastString(udpListener, clientEndPoint, player1Data);
                     }
 
-                    if (!string.IsNullOrEmpty(player1IP))
+                    if (!string.IsNullOrEmpty(player2IP))
                     {
-                        Console.WriteLine(player1IP);
+                        Console.WriteLine(player2IP);
                     }
                     
                 }
+                stopwatch.Restart();
                 
                 /*else if (ipMess[0] == player1IP)
                 {
