@@ -41,7 +41,7 @@ class Program
 
             IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
             
-            byte[] receivedData = udpListener.Receive(ref clientEndPoint);
+            /*byte[] receivedData = udpListener.Receive(ref clientEndPoint);
             if (receivedData != null)
             {
                 message = Encoding.UTF8.GetString(receivedData);
@@ -57,19 +57,19 @@ class Program
                 player2IP = ipMess[0];
                 player2Data = message;
             }
-            else if (ipMess[0] == player1IP)
+            if (ipMess[0] == player1IP)
             {
                 player1Data = message;
                 BroadcastString(udpListener, clientEndPoint, player2Data);
                 //send player 2 data to player 1
             }
-            else if (ipMess[1] == player2IP)
+            if (ipMess[1] == player2IP)
             {
                 player2Data = message;
                 BroadcastString(udpListener, clientEndPoint, player1Data);
                 //send player 1 data to player 2 
-            }
-            
+            }*/
+            BroadcastString(udpListener, clientEndPoint, "playerData");
             Console.WriteLine(message);
         }
 
